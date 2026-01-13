@@ -13,7 +13,9 @@ def generate_launch_description():
 
     return LaunchDescription([
         LaunchArg('namespace', default_value=['point'], description='Namespace for node'),
+        # subscript to track
         LaunchArg('track', default_value=['track'], description='Track message topic'),
+        # publish pointcloud
         LaunchArg('pointcloud', default_value=['/pointcloud'], description='Pointcloud message topic'),
         LaunchArg('frame_id', default_value=['/map'], description='Pointcloud frame'),
         LaunchArg('name', default_value=['name'], description='node name'),
