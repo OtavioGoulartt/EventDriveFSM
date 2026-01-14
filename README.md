@@ -46,3 +46,14 @@ This **launcher** is designed for launching the pointcloud
 ## Rosbag Converter
 
 This **"package"** is designed for converting **track** rosbags to **CSV** files.
+
+
+# Workspace Lockfile 
+Files responsible for cloning all the correct versions of each package that integrates this pipeline.
+Using workspace.lock.repos, it is possible to freeze functional versions of the code by recording the exact and immutable versions of all dependencies used to build an artifact, ensuring that anyone can reproduce the same build result.
+After executing the given commands in the terminal, a workspace.lock.repos file will be generated in the workspace root directory. Move this file to the pipeline_releases directory and give it a name that reflects the functionality of that version
+ ## Commands 
+ ```bash
+cd ~/ros2_ws
+vcs export --exact src > workspace.lock.repos
+   ```
