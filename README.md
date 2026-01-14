@@ -64,3 +64,28 @@ vcs export --exact src > workspace.lock.repos
 > - Reads the exact commit hash currently checked out in each repository
 > - Writes a `.repos` file containing the repository URLs and their immutable commit versions
 > - Creates a reproducible snapshot of the entire pipeline
+
+ ```bash
+mv workspace.lock.repos pipeline_releases/
+   ```
+> [!NOTE]
+> - Moves the generated lockfile to the directory reserved for pipeline releases
+> - Keeps release artifacts separated from development files
+
+ ```bash
+mv pipeline_releases/workspace.lock.repos pipeline_releases/amp_pipeline_humble_2026-01-14.lock.repos
+   ```
+> [!NOTE]
+> - Rename the lockfile to reflect the pipeline version
+> - Makes it clear which functionality, ROS distribution, and validation date this pipeline version corresponds to
+
+## Using a frozen pipeline version
+ ```bash
+vcs import src < pipeline_releases/amp_pipeline_humble_2026-01-14.lock.repos
+colcon build
+   ```
+> [!NOTE]
+> - Clones all repositories listed in the lockfile
+> - Rebuilds the same pipeline that was previously validated
+
+
