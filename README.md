@@ -53,8 +53,8 @@ Files responsible for cloning all the correct versions of each package that inte
 Using workspace.lock.repos, it is possible to freeze functional versions of the code by recording the exact and immutable versions of all dependencies used to build an artifact, ensuring that anyone can reproduce the same build result.
 
 After executing the given commands in the terminal, a workspace.lock.repos file will be generated in the workspace root directory. Move this file to the pipeline_releases directory and give it a name that reflects the functionality of that version
- ## Commands 
-
+## Commands 
+### Creating the lockfile 
  ```bash
 cd ~/ros2_ws
 vcs export --exact src > workspace.lock.repos
@@ -64,21 +64,20 @@ vcs export --exact src > workspace.lock.repos
 > - Reads the exact commit hash currently checked out in each repository
 > - Writes a `.repos` file containing the repository URLs and their immutable commit versions
 > - Creates a reproducible snapshot of the entire pipeline
-
+### Moving file to correct place
  ```bash
 mv workspace.lock.repos pipeline_releases/
    ```
 > [!NOTE]
 > - Moves the generated lockfile to the directory reserved for pipeline releases
 > - Keeps release artifacts separated from development files
-
+### Renaming file 
  ```bash
 mv pipeline_releases/workspace.lock.repos pipeline_releases/amp_pipeline_humble_2026-01-14.lock.repos
    ```
 > [!NOTE]
 > - Rename the lockfile to reflect the pipeline version
 > - Makes it clear which functionality, ROS distribution, and validation date this pipeline version corresponds to
-
 ## Using a frozen pipeline version
  ```bash
 vcs import src < pipeline_releases/amp_pipeline_humble_2026-01-14.lock.repos
