@@ -21,7 +21,7 @@ def generate_launch_description():
         LaunchArg('name', default_value=['name'], description='node name'),
 
         Node(
-            package='as_utils',
+            package='amp_utils',
             executable='pointcloud_rgb',
             name=LaunchConfig('name'),
             namespace= LaunchConfig('namespace'),
