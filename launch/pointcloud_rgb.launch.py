@@ -17,13 +17,13 @@ def generate_launch_description():
         LaunchArg('track', default_value=['track'], description='Track message topic'),
         # publish pointcloud
         LaunchArg('pointcloud', default_value=['/pointcloud'], description='Pointcloud message topic'),
-        LaunchArg('frame_id', default_value=['/map'], description='Pointcloud frame'),
+        LaunchArg('frame_id', default_value=['base_link'], description='Pointcloud frame'),
         LaunchArg('name', default_value=['name'], description='node name'),
 
         Node(
             package='amp_utils',
             executable='pointcloud_rgb',
-            name=LaunchConfig('name'),
+            name='pointcloud_rgb',
             namespace= LaunchConfig('namespace'),
             remappings=[('/track', LaunchConfig('track')),
                         ('/pointcloud', LaunchConfig('pointcloud'))],

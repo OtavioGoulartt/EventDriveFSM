@@ -36,6 +36,12 @@ endif()
 install(TARGETS pointcloud_rgb
         DESTINATION lib/${PROJECT_NAME})
 
+install(
+        PROGRAMS 
+        src/odom_plot_node.py
+        DESTINATION lib/${PROJECT_NAME}
+)
+
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 
 ament_package()
