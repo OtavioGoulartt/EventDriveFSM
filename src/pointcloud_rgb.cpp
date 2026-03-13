@@ -18,7 +18,7 @@ class MinimalSubscriber : public rclcpp::Node
         subscription_ = this->create_subscription<fs_msgs::msg::TrackStampedWithCovariance>(
         "/track", 10, std::bind(&MinimalSubscriber::track_callback, this, _1));
         publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/pointcloud", 10);
-        this->declare_parameter<std::string>("frame_id", "base_link");
+        this->declare_parameter<std::string>("frame_id", "oak_left_camera_optical_frame");
     }
 
   private:
@@ -51,9 +51,9 @@ class MinimalSubscriber : public rclcpp::Node
             /* code */
             float x,y,z;
             int16_t r,g,b;
-            x = msg.track[i].location.z;
-            y = - msg.track[i].location.x;
-            z = - msg.track[i].location.y;
+            x = msg.track[i].location.x;
+            y = msg.track[i].location.y;
+            z = msg.track[i].location.z;
 
             switch (msg.track[i].color)
             {
