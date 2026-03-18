@@ -11,7 +11,7 @@ class FrequencyMonitorNode(Node):
     def __init__(self):
         super().__init__('ekf_sim_node')
         self.msg_type = Odometry
-        self.msg_topic = '/ekf_odometry'
+        self.msg_topic = '/fsds/testing_only/odom'
 
         self.subscription = self.create_subscription(self.msg_type, self.msg_topic, self.freq_callback, 10)
         self.frequency_pub = self.create_publisher(Float64, 'frequency_pub', 10)
@@ -21,7 +21,7 @@ class FrequencyMonitorNode(Node):
     def freq_callback(self, msg):
         self.frequency = Float64()
         stamp_sec = msg.header.stamp.sec
-        stamp_nsec = msg.header.stamp.nsec
+        stamp_nsec = msg.header.stamp.nanosec
 
         new_time = stamp_sec + stamp_nsec / 1e9
 
@@ -31,8 +31,13 @@ class FrequencyMonitorNode(Node):
         
         delta_time = new_time - self.last_time
         self.last_time = new_time
+        
+        if delta_time == 0:
+            return
+        
+        self.frequency.data = 1.0 / delta_time
 
-        self.frequency_pub.publish(delta_time)
+        self.frequency_pub.publish(self.frequency)
 
 
 def main(args=None):
