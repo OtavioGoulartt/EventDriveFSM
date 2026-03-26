@@ -20,6 +20,12 @@ add_executable(pointcloud_rgb
 ament_target_dependencies(pointcloud_rgb rclcpp sensor_msgs fs_msgs)
 target_link_libraries(pointcloud_rgb ${OpenCV_LIBS})
 
+install(
+        PROGRAMS 
+        src/frequency_monitor_node.py
+        DESTINATION lib/${PROJECT_NAME}
+)
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
