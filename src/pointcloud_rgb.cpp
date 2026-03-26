@@ -2,7 +2,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
-#include "fs_msgs/msg/track.hpp"
+#include "fs_msgs/msg/track_stamped_with_covariance.hpp"
 #include "fs_msgs/msg/cone.hpp"
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <sensor_msgs/point_cloud2_iterator.hpp>
@@ -15,14 +15,14 @@ class MinimalSubscriber : public rclcpp::Node
     MinimalSubscriber()
     : Node("Track_Pointcloud")
     {
-        subscription_ = this->create_subscription<fs_msgs::msg::Track>(
+        subscription_ = this->create_subscription<fs_msgs::msg::TrackStampedWithCovariance>(
         "/track", 10, std::bind(&MinimalSubscriber::track_callback, this, _1));
         publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/pointcloud", 10);
-        this->declare_parameter<std::string>("frame_id", "/map");
+        this->declare_parameter<std::string>("frame_id", "oak_left_camera_optical_frame");
     }
 
   private:
-    void track_callback(const fs_msgs::msg::Track & msg) const
+    void track_callback(const fs_msgs::msg::TrackStampedWithCovariance & msg) const
     {
         // RCLCPP_INFO(this->get_logger(), "There is '%ld' cones inside the message", msg.track.size());
         sensor_msgs::msg::PointCloud2 pointcloudmsg;
@@ -94,7 +94,7 @@ class MinimalSubscriber : public rclcpp::Node
         publisher_->publish(pointcloudmsg);
         
     }
-    rclcpp::Subscription<fs_msgs::msg::Track>::SharedPtr subscription_;
+    rclcpp::Subscription<fs_msgs::msg::TrackStampedWithCovariance>::SharedPtr subscription_;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
 };
 
