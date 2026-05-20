@@ -45,6 +45,8 @@ install(TARGETS pointcloud_rgb
 install(
         PROGRAMS 
         src/odom_plot_node.py
+        src/simulated_gps_error_node.py
+        src/simulated_yaw_error_node.py
         DESTINATION lib/${PROJECT_NAME}
 )
 
