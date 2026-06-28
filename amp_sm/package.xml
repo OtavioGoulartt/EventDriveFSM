@@ -3,7 +3,7 @@
 <package format="3">
   <name>amp_sm</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Ampera state machine</description>
   <maintainer email="otaviopgoulart06@gmail.com">otaviogoulart</maintainer>
   <license>TODO: License declaration</license>
 
@@ -16,6 +16,7 @@
   <depend>lifecycle_msgs</depend>
   <depend>ros_timer_client</depend>
   <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
   <exec_depend>rclpy</exec_depend>
 
 

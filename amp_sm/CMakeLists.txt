@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
 project(amp_sm)
 
+add_compile_options(-Wno-deprecated-declarations)
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -12,6 +14,7 @@ find_package(rclcpp_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 find_package(ros_timer_client REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)  
 
 add_executable(amp_sm_node src/main.cpp)
 
@@ -27,6 +30,7 @@ ament_target_dependencies(amp_sm_node
   lifecycle_msgs
   ros_timer_client
   std_msgs
+  sensor_msgs
 )
 
 install(
@@ -45,11 +49,12 @@ install(TARGETS amp_sm_node
         DESTINATION lib/${PROJECT_NAME}
 )
 
+
 install(DIRECTORY include/
         DESTINATION include
 )
 
-install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}/)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

@@ -3,6 +3,8 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
+from fs_msgs.msg import GoSignal
+
 import sys
 import select
 import tty
@@ -13,6 +15,7 @@ class TecladoCanNode(Node):
         super().__init__('teclado_can_node')
         
         # Cria os publishers para os tópicos específicos
+        self.pub_mission_select_go = self.create_publisher(GoSignal, '/as_amp/mission_select/go', 10)
         self.pub_mission_select = self.create_publisher(String, '/as_amp/mission_select', 10)
         self.pub_go = self.create_publisher(String, '/as_amp/go', 10)
         self.pub_finished = self.create_publisher(String, '/as_amp/finished', 10)
@@ -30,6 +33,9 @@ class TecladoCanNode(Node):
         msg = String()
         msg.data = comando
         self.pub_mission_select.publish(msg)
+        go = GoSignal()
+        go.mission = comando
+        self.pub_mission_select_go.publish(go)
         self.get_logger().info(f'🚀 Mensagem "{comando}" enviada no tópico /as_amp/mission_select!')
 
     def disparar_go(self, comando):
@@ -71,7 +77,7 @@ def main(args=None):
             elif tecla == 'w':
                 node.disparar_mission_select("CALIBRATION")
             elif tecla == 'e':
-                node.disparar_mission_select("TRACKDRIVE")
+                node.disparar_mission_select("trackdrive")
             elif tecla == 'v':
                 node.disparar_go("GO")
             elif tecla == 'c':
