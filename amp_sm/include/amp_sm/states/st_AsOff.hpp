@@ -3,9 +3,10 @@
 #include <smacc2/smacc.hpp>
 #include <lifecycle_msgs/msg/transition.hpp>
 
-#include "../client_behaviors/cb_change_lifecycle.hpp"
+#include "../client_behaviors/cb_change_lifecycle_group.hpp"
 #include <amp_sm/clients/cl_lifecycle_pipeline.hpp>
 #include <amp_sm/clients/cl_topic_listener.hpp>
+#include <amp_sm/clients/cl_lifecycle_monitor.hpp>
 
 namespace amp_sm
 {
@@ -22,13 +23,20 @@ struct st_AsOff : smacc2::SmaccState<st_AsOff, Amp_sm>
     > reactions;
 
     static void staticConfigure()
-    {
-        configure_orthogonal<or_utils, CbChangeLifecycle<ClCheckLifecycle>>(
-            lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE
-            );
-        configure_orthogonal<or_utils, CbChangeLifecycle<ClRepeaterLifecycle>>(
-            lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE
-            );
+    {   
+
+
+        std::vector<std::string> nodes_to_configure = {
+            "/check_node_lifecycle",
+            "/repeater_node",
+            "/perception_lifecycle_node",
+            "/path_node",
+            "/yolo_node",
+            "/control_node"
+        };
+
+        configure_orthogonal<or_utils, CbChangeLifecycleGroup>(nodes_to_configure, 1);
+
     }
 
     void onEntry()

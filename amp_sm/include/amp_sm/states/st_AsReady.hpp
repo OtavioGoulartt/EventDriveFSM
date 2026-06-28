@@ -28,12 +28,46 @@ struct st_AsReady : smacc2::SmaccState<st_AsReady, Amp_sm>
     > reactions;
 
     static void staticConfigure()
-    {
-        configure_orthogonal<or_utils, CbChangeLifecycle<ClRepeaterLifecycle>>(
-            lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE, // ativa o nó repeater na entrada no Estado.
-            lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE // desliga o nó na saida do Estado.
-            );
+    {   
+        
+        //
+        // Mapper
+        //
+        
+            //...
 
+        //
+        //
+
+        //
+        // Utils
+        //
+        
+            //...
+
+        //
+        //
+
+        //
+        //  Control
+        //
+
+            //...
+
+        //
+        //
+
+        std::vector<std::string> nodes_to_configure = {
+            "/check_node_lifecycle",
+            "/repeater_node",
+            "/perception_lifecycle_node",
+            "/path_node",
+            "/yolo_node",
+            "/control_node"
+        };
+
+        configure_orthogonal<or_utils, CbChangeLifecycleGroup>(nodes_to_configure, 3);
+        
     }
 
     void onEntry()

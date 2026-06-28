@@ -13,7 +13,9 @@ namespace amp_sm
     struct st_AsFinished;
 }
 
-#include "orthogonals/or_pipeline.hpp"
+#include "orthogonals/or_mapper.hpp"
+#include "orthogonals/or_motion.hpp"
+#include "orthogonals/or_perception.hpp"
 #include "orthogonals/or_utils.hpp"
 
 namespace amp_sm
@@ -26,7 +28,9 @@ struct Amp_sm : public smacc2::SmaccStateMachineBase<Amp_sm, st_AsOff>
     void onInitialize() override
     {
         RCLCPP_INFO(getLogger(), "[Amp SM] Iniciando a Máquina de Estados...");
-        this->createOrthogonal<or_pipeline>();
+        this->createOrthogonal<or_mapper>();
+        this->createOrthogonal<or_motion>();
+        this->createOrthogonal<or_perception>();
         this->createOrthogonal<or_utils>();
     }
 };

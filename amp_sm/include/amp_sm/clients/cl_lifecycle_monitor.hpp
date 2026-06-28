@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 #include <vector>
-
+#include <std_msgs/msg/string.hpp>
 #include <smacc2/smacc_client.hpp>
 #include <lifecycle_msgs/msg/transition_event.hpp>
 
@@ -15,6 +15,7 @@ struct EvNodeDeactivated : boost::statechart::event<EvNodeDeactivated> {};
 struct EvNodeCrashed     : boost::statechart::event<EvNodeCrashed> {};
 
 struct EvAllNodesConfigured : boost::statechart::event<EvAllNodesConfigured> {};
+struct EvAllNodesInactive : boost::statechart::event<EvAllNodesInactive> {};
 struct EvAllNodesActivated  : boost::statechart::event<EvAllNodesActivated> {};
 
 class ClLifecycleMonitor : public smacc2::ISmaccClient
@@ -27,6 +28,11 @@ public:
 
     void onInitialize() override
     {
+        // 1. Criamos o publicador para o tópico de alertas do carro
+        // Usamos QoS 10 para garantir que a mensagem chega mesmo se houver tráfego
+        alert_pub_ = getNode()->create_publisher<std_msgs::msg::String>("/as_amp/shutdown", 10);
+
+        // 2. Criamos os subscribers para ouvir as transições de cada nó
         for (const std::string & name : node_names_)
         {
             std::string topic_name = name + "/transition_event";
@@ -44,10 +50,14 @@ public:
 private:
     std::vector<std::string> node_names_;
     std::vector<rclcpp::Subscription<lifecycle_msgs::msg::TransitionEvent>::SharedPtr> subs_;
+    
+    // Variável para guardar o nosso publicador
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr alert_pub_;
 
     void messageCallback(const lifecycle_msgs::msg::TransitionEvent::SharedPtr msg, const std::string & node_name)
     {
         std::string novo_estado = msg->goal_state.label;
+        std::string gatilho = msg->transition.label;
 
         RCLCPP_INFO(getLogger(), "[Monitor Individual -> %s] mudou para o estado: %s", 
                     node_name.c_str(), novo_estado.c_str());
@@ -60,10 +70,22 @@ private:
         {
             this->postEvent<EvNodeDeactivated>();
         }
-        else if (novo_estado == "unconfigured" || novo_estado == "errorprocessing")
+        else if (novo_estado == "finalized" || novo_estado == "unconfigured" || novo_estado == "errorprocessing")
         {
-            RCLCPP_ERROR(getLogger(), "[Monitor Individual -> %s] ALERTA CRITICO!", node_name.c_str());
-            this->postEvent<EvNodeCrashed>();
+            // Imprime no terminal local (para quem estiver a olhar para o ecrã)
+            RCLCPP_ERROR(getLogger(), "🚨 FALHA CRÍTICA: [%s] derrubado por [%s] 🚨", node_name.c_str(), gatilho.c_str());
+
+            // 3. Monta a mensagem e PUBLICA NO TÓPICO ROS para toda a rede ver
+            std_msgs::msg::String alert_msg;
+            alert_msg.data = "CRITICAL FAULT | Node: " + node_name + 
+                             " | Trigger: " + gatilho + 
+                             " | Result: " + novo_estado;
+            
+            // Publica o erro!
+            alert_pub_->publish(alert_msg);
+
+            // Avisa a máquina de estados para tomar uma atitude
+            this->postEvent<EvNodeCrashed>(); 
         }
     }
 };
@@ -120,11 +142,20 @@ private:
     {
         bool all_configured = true;
         bool all_activated = true;
+        bool all_inactive = true; // NOVA FLAG
 
         for (const auto & pair : node_states_)
         {
-            if (pair.second != "inactive") all_configured = false;
-            if (pair.second != "active") all_activated = false;
+            // O estado "inactive" significa que o nó está configurado, mas não ativo.
+            if (pair.second != "inactive") 
+            {
+                all_configured = false;
+                all_inactive = false; // Se alguém não for inactive, a flag cai
+            }
+            if (pair.second != "active") 
+            {
+                all_activated = false;
+            }
         }
 
         if (all_configured)
@@ -137,6 +168,13 @@ private:
         {
             RCLCPP_INFO(getLogger(), " [Consenso] SUCESSO! Todos os nos estao ATIVADOS a 100%%.");
             this->postEvent<EvAllNodesActivated>();
+        }
+
+        // NOVO BLOCO
+        if (all_inactive)
+        {
+            RCLCPP_INFO(getLogger(), " [Consenso] SUCESSO! Todos os nos estao INATIVOS.");
+            this->postEvent<EvAllNodesInactive>();
         }
     }
 };

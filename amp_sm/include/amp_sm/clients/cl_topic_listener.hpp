@@ -14,11 +14,15 @@ namespace amp_sm
     struct EvStopListener : boost::statechart::event<EvStopListener>{};
     struct EvFinishedListener : boost::statechart::event<EvFinishedListener>{};
 
+
+    //
+    // Utils
+    //
     class ClMissionSelectListener : public smacc2::client_bases::SmaccSubscriberClient<std_msgs::msg::String>
     {
     public:
         ClMissionSelectListener()
-            : smacc2::client_bases::SmaccSubscriberClient<std_msgs::msg::String>("/can/autonomous_mode")
+            : smacc2::client_bases::SmaccSubscriberClient<std_msgs::msg::String>("/as_amp/mission_select")
         {
         }
 
@@ -33,32 +37,33 @@ namespace amp_sm
     private:
         void messageCallback(const std_msgs::msg::String &msg)
         {
-            if (msg.data == "SKIDPAD" || msg.data == "ACCELARATION" || msg.data == "TRACKDRIVE" || msg.data == "AUTOCROSS")
+            if (msg.data == "SKIDPAD" || msg.data == "ACCELERATION" || msg.data == "trackdrive" || msg.data == "AUTOCROSS")
             {
                 RCLCPP_INFO(
-                    getLogger(),
-                    "[ClTopicListener] Comando MISSION_SELECT recebido! Disparando evento...");
-
+                    getLogger(), 
+                    "[ClTopicListener] Comando MISSION_SELECT recebido! Disparando evento..."
+                );
                 this->postEvent<EvMissionSelectListener>();
             }
             else if (msg.data == "CALIBRATION")
             {
                 RCLCPP_INFO(
-                    getLogger(),
-                    "[ClTopicListener] Comando CALIBRATION recebido! Disparando evento...");
-
+                    getLogger(), 
+                    "[ClTopicListener] Comando CALIBRATION recebido! Disparando evento..."
+                );
                 this->postEvent<EvCalibrationListener>();
             }
             else if (msg.data == "CHECK")
             {
                 RCLCPP_INFO(
-                    getLogger(),
-                    "[ClTopicListener] Comando CHECK recebido! Disparando evento...");
-
+                    getLogger(), 
+                    "[ClTopicListener] Comando CHECK recebido! Disparando evento..."
+                );
                 this->postEvent<EvCheckListener>();
             }
         }
     };
+
     class ClGoListener : public smacc2::client_bases::SmaccSubscriberClient<std_msgs::msg::String>
     {
     public:
@@ -146,4 +151,7 @@ namespace amp_sm
             }
         }
     };
+    //
+    //
+    
 } // namespace amp_sm
