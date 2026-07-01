@@ -45,7 +45,7 @@ class ClCheckLifecycle : public ClLifecycleInterface
 public:
     // 2. Fica minúsculo: apenas repassa a string de destino para a classe mãe
     ClCheckLifecycle() 
-        : ClLifecycleInterface("/check_node_lifecycle/change_state")
+        : ClLifecycleInterface("/check_lifecycle_node/change_state")
     {
     }
 };

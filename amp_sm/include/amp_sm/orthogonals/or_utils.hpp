@@ -22,7 +22,7 @@ public:
         
         // lista de nós que fazem parte do subsistema
         std::vector<std::string> nodes = {
-            "/check_node_lifecycle",
+            "/check_lifecycle_node",
             "/repeater_node"
         };
 
@@ -33,7 +33,7 @@ public:
             "/path_node",
             "/control_node",
             "/yolo_node",
-            "/check_node_lifecycle"
+            "/check_lifecycle_node"
 
             //...
         };

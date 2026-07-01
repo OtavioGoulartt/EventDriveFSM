@@ -27,7 +27,7 @@ struct st_AsOff : smacc2::SmaccState<st_AsOff, Amp_sm>
 
 
         std::vector<std::string> nodes_to_configure = {
-            "/check_node_lifecycle",
+            "/check_lifecycle_node",
             "/repeater_node",
             "/perception_lifecycle_node",
             "/path_node",
