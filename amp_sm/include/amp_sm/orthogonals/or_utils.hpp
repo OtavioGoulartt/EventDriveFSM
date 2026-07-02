@@ -18,7 +18,6 @@ public:
     {   
         // cliente que assina no serviço de cada nó. Dessa maneira ele consegue controlar o lifecycle.
         this->createClient<amp_sm::ClRepeaterLifecycle>();
-
         
         // lista de nós que fazem parte do subsistema
         std::vector<std::string> nodes = {
@@ -30,8 +29,8 @@ public:
         std::vector<std::string> on_startup_nodes = {
             "/repeater_node",
             "/perception_lifecycle_node",
-            "/path_node",
             "/control_node",
+            "/path_node",
             "/yolo_node",
             "/check_lifecycle_node"
 
@@ -46,7 +45,7 @@ public:
 
         // listeners
         this->createClient<amp_sm::ClMissionSelectListener>(); // cliente que dispara um Evento quando recebe um "Go".
-        this->createClient<amp_sm::ClGoListener>(); // cliente que dispara um Evento quando recebe alguma missao valida.
+        this->createClient<amp_sm::ClReadyToDrive>(); // cliente que dispara um Evento quando recebe alguma missao valida & mensagem go do res & mensagem ready do res.
         this->createClient<amp_sm::ClFinishedListener>(); // cliente que dispara um Evento quando recebe a missao foi concluida (mensagem publicada pelo Path Planning).
     }
 };

@@ -30,8 +30,8 @@ struct st_AsOff : smacc2::SmaccState<st_AsOff, Amp_sm>
             "/check_lifecycle_node",
             "/repeater_node",
             "/perception_lifecycle_node",
-            "/path_node",
             "/yolo_node",
+            "/path_node",
             "/control_node"
         };
 
@@ -46,7 +46,7 @@ struct st_AsOff : smacc2::SmaccState<st_AsOff, Amp_sm>
 
     void onExit()
     {
-        RCLCPP_INFO(getLogger(), "Estado off: Saltando automaticamente para st_AsSetup!");
+        RCLCPP_INFO(getLogger(), "Estado off: Saltando automaticamente para st_AsReady!");
     }
 };
 } // namespace amp_sm
